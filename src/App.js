@@ -1,32 +1,24 @@
 import "bulma/css/bulma.css";
-import './App.css';
 import { useState } from "react";
-import AnimalShow from "./AnimalShow";
+import SearchBar from "./components/SearchBar";
+import ImageList from "./components/ImageList";
 // import { useState } from "react";
-
-function getRandomAnimal() {
-  const animals = ["bird", "cat", "cow", "dog", "gator", "horse"];
-
-  return animals[Math.floor(Math.random() * animals.length)];
-}
-
-console.log(getRandomAnimal());
+import searchImage from "./api";
 
 function App() {
-  const [animals, setAnimals] = useState([]);
+  const [images, setImages] = useState([]);
 
-  const handleClick = () => {
-    setAnimals([...animals, getRandomAnimal()]);
+  const handleSubmit = async (term) => {
+    const result = await searchImage(term);
+
+    setImages(result);
+    // console.log(result);
   };
 
-  const renderedAnimals = animals.map((animal, index) => {
-    return <AnimalShow type={animal} key={index} />
-  })
-
   return (
-    <div className="app">
-      <button onClick={handleClick}>Add Animal</button>
-      <div className="animal-list">{renderedAnimals}</div>
+    <div>
+      <SearchBar onSubmit={handleSubmit} />
+      <ImageList images={images} />
     </div>
   );
 }
