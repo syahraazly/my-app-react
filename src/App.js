@@ -1,24 +1,45 @@
 import "bulma/css/bulma.css";
 import { useState } from "react";
-import SearchBar from "./components/SearchBar";
-import ImageList from "./components/ImageList";
-// import { useState } from "react";
-import searchImage from "./api";
+import BookCreate from "./components/BookCreate";
+import BookList from "./components/BookList";
 
 function App() {
-  const [images, setImages] = useState([]);
+  const [books, setBooks] = useState([]);
 
-  const handleSubmit = async (term) => {
-    const result = await searchImage(term);
+  const editBookById = (id, newTitle) => {
+    const updatedBooks = books.map((book) => {
+      if (book.id === id) {
+        return { ...book, title: newTitle };
+      }
 
-    setImages(result);
-    // console.log(result);
+      return book;
+    });
+
+    setBooks(updatedBooks);
+  };
+
+  const deleteBookById = (id) => {
+    const updatedBooks = books.filter((book) => {
+      return book.id !== id;
+    });
+    setBooks(updatedBooks);
+  };
+
+  const createBook = (title) => {
+    const updatedBooks = [
+      ...books,
+      {
+        id: Math.round(Math.random() * 9999),
+        title,
+      },
+    ];
+    setBooks(updatedBooks);
   };
 
   return (
-    <div>
-      <SearchBar onSubmit={handleSubmit} />
-      <ImageList images={images} />
+    <div className="app">
+      <BookList onEdit={editBookById} books={books} onDelete={deleteBookById} />
+      <BookCreate onCreate={createBook} />
     </div>
   );
 }
